@@ -1,0 +1,5 @@
+https://cdnjs.cloudflare.com/ajax/libs/jasmine/2.9.1/jasmine.min.css
+
+https://cdnjs.cloudflare.com/ajax/libs/jasmine/2.9.1/jasmine.min.js
+https://cdnjs.cloudflare.com/ajax/libs/jasmine/2.9.1/jasmine-html.min.js
+https://cdnjs.cloudflare.com/ajax/libs/jasmine/2.9.1/boot.min.js

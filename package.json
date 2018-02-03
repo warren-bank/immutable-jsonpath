@@ -1,0 +1,31 @@
+{
+  "name": "@warren-bank/immutable-jsonpath",
+  "version": "1.0.0",
+  "description": "jsonpath enhancement: extends class prototype with immutable assignment of value to pathExpression",
+  "main": "./index.js",
+  "browser": "./browser-build/dist/immutable_jsonpath.js",
+  "dependencies": {},
+  "devDependencies": {},
+  "peerDependencies": {
+    "jsonpath": "*"
+  },
+  "scripts": {
+    "test": "cd tests && npm run test",
+    "build": "cd browser-build && npm run build",
+    "postversion": "git push && git push --tags && npm publish --access=public"
+  },
+  "author": {
+    "name": "Warren R. Bank",
+    "email": "warren.r.bank@gmail.com",
+    "url": "https://github.com/warren-bank"
+  },
+  "license": "GPL-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/warren-bank/immutable-jsonpath"
+  },
+  "keywords": [
+    "immutable",
+    "jsonpath"
+  ]
+}

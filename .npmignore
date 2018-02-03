@@ -1,0 +1,6 @@
+*
+
+!package.json
+!index.js
+!browser-build/dist/immutable_jsonpath.js
+!browser-build/dist/immutable_jsonpath.map

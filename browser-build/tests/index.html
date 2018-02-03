@@ -1,0 +1,33 @@
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Jasmine Tests</title>
+  <link href="vendor/jasmine-2.9.1/jasmine.min.css" rel="stylesheet" />
+</head>
+<body>
+  <!-- (peerDependencies) "jsonpath" MUST be loaded before enhancer -->
+  <script src="vendor/jsonpath-1.0.0/jsonpath.min.js"></script>
+  <script src="../dist/immutable_jsonpath.js"></script>
+
+  <script src="vendor/jasmine-2.9.1/jasmine.min.js"></script>
+  <script src="vendor/jasmine-2.9.1/jasmine-html.min.js"></script>
+  <script src="vendor/jasmine-2.9.1/boot.min.js"></script>
+  <script>
+  {
+    let run_jasmine = window.onload
+    window.onload = undefined
+
+    setTimeout( () => {
+      run_jasmine()
+    }, 500)
+  }
+  </script>
+
+  <script src="vendor/deep-freeze-0.0.1/index.js"></script>
+
+  <script src="js/glue.js"></script>
+
+  <script src="vendor/babel-standalone-6.26.0/babel.min.js"></script>
+  <script src="../../tests/__tests__/index.js" type="text/babel"></script>
+</body>
+</html>
