@@ -11,16 +11,17 @@ const enhancer = jsonpath => {
     let result, ptr
     for (let i=0; i<path_to_leaf.length; i++) {
       const key = path_to_leaf[i]
+      const key_next = (i === path_to_leaf.length - 1) ? undefined : path_to_leaf[i+1]
       const path_to_node = path_to_leaf.slice(0, i+1)
       const node = this.value(obj, path_to_node)
       const new_value = (i === path_to_leaf.length - 1)
         ? value
         : (node === undefined)
-          ? (typeof key === 'string')
+          ? (typeof key_next === 'string')
             ? {}
-            : (typeof key === 'number')
+            : (typeof key_next === 'number')
               ? []
-              : new Error('path contains the invalid key: ' + JSON.stringify(key))
+              : new Error('path contains the invalid key: ' + JSON.stringify(key_next))
           : (node instanceof Array)
             ? [...node]
             : (node instanceof Object)
