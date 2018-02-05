@@ -1,48 +1,35 @@
 const assert = require('assert')
 
 const enhancer = jsonpath => {
-  jsonpath.JSONPath.prototype.assign = function(obj, path, value) {
+  jsonpath.JSONPath.prototype.assign = function(obj, path_string, value) {
     assert.ok(obj instanceof Object, "obj needs to be an object")
-    assert.ok(path,  "we need a path")
+    assert.ok(path_string, "we need a path")
     assert.ok(value, "we need a value")
 
-    // ordered from root to path node
-    const ancestry = []
-
-    let node = this.nodes(obj, path).shift()
-    if (!node) return this._vivify(obj, path, value)
-
-    const chunks = node.path
-
-    const breadcrumbs = []
-    while (chunks.length) {
-      let key, node_path, node
-
-      key = chunks.shift()
-      breadcrumbs.push(key)
-
-      node_path = this.stringify(breadcrumbs)
-      node      = this.nodes(obj, node_path).shift().value
-
-      ancestry.push({key, node})
-    }
+    const path_to_leaf = this.parser.parse(path_string).map(component => component.expression.value)
 
     let result, ptr
-    ancestry.forEach(({key, node}, index) => {
-      if (!index) {
-        assert.ok(node === obj, "sanity check: first ancestor node must be the input object")
+    for (let i=0; i<path_to_leaf.length; i++) {
+      const key = path_to_leaf[i]
+      const path_to_node = path_to_leaf.slice(0, i+1)
+      const node = this.value(obj, path_to_node)
+      const new_value = (i === path_to_leaf.length - 1)
+        ? value
+        : (node === undefined)
+          ? {}
+          : (node instanceof Array)
+            ? [...node]
+            : (node instanceof Object)
+              ? {...node}
+              : new Error('path implicitly extends a leaf node that is not a collection')
 
-        result = {...node}
-        ptr = result
-      }
-      else if (index < ancestry.length - 1) {
-        ptr[key] = {...node}
-        ptr = ptr[key]
-      }
-      else {
-        ptr[key] = value
-      }
-    })
+      if (new_value instanceof Error) throw new_value
+
+      if (i === 0) result = new_value
+      else ptr[key] = new_value
+
+      ptr = new_value
+    }
 
     return result || obj
   }

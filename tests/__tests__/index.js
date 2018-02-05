@@ -76,10 +76,13 @@ describe('jsonpath.assign() to update object', function() {
 
   it('should not throw an Error when the input object is frozen', function() {
     deepFreeze(data_1)
+    let data_3
 
     expect(() => {
-      jsonpath.assign(data_1, path, 'world')
+      data_3 = jsonpath.assign(data_1, path, 'world')
     }).not.toThrow()
+
+    expect(jsonpath.value(data_3, path)).toEqual('world')
   })
 
   it('should not clone nodes in the input object that occur outside of the path between root ($) and leaf (pathExpression)', function() {
