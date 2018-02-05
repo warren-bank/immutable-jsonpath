@@ -31,4 +31,18 @@ describe('jsonpath.assign() used to vivify non-existent nodes in path', function
 
     expect(jsonpath.value(data, path)).toBe(value)
   })
+
+  it('should should throw an Error when extending a non-collection', function() {
+    const obj   = deepFreeze({store: {book: 'i am not an array!'}})
+
+    const path  = '$.store.book[0].author[0]'
+    const value = 'i am a co-author'
+
+    let data
+    expect(() => {
+      data = jsonpath.assign(obj, path, value)
+    }).toThrow()
+
+    expect(data).toBe(undefined)
+  })
 })
