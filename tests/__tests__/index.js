@@ -90,4 +90,47 @@ describe('jsonpath.assign() to update object', function() {
 
     expect(data_3.b).toBe(data_1.b)
   })
+
+  it('can be used to perform more complicated operations on an existing collection: Object', function() {
+    deepFreeze(data_1)
+
+    const path = '$.a.aa.aaa'
+    const aaa  = jsonpath.value(data_1, path)
+
+    const new_keys  = {
+      aaaa_prime: {aaaaa_prime: 'world'}
+    }
+    const aaa_prime = Object.assign({}, aaa, new_keys)
+    const data_3    = jsonpath.assign(data_1, path, aaa_prime)
+
+    expect(jsonpath.value(data_1, path)).toBe(aaa)
+    expect(jsonpath.value(data_3, path)).toBe(aaa_prime)
+
+    expect(data_3).not.toBe(data_1)
+  })
+
+  it('can be used to perform more complicated operations on an existing collection: Array', function() {
+    // data_1.a.aa.aaa = [
+    //                     data_1.a.aa.aaa
+    //                   ]
+    const path    = '$.a.aa.aaa'
+    const aaa_obj = jsonpath.value(data_1, path)
+    const aaa_arr = [aaa_obj]
+
+    jsonpath.value(data_1, path, aaa_arr)
+    deepFreeze(data_1)
+
+    // data_3.a.aa.aaa = [
+    //                     data_1.a.aa.aaa[0],
+    //                     data_1.a.aa.aaa[0],
+    //                     data_1.a.aa.aaa[0]
+    //                   ]
+    const aaa_prime = [...aaa_arr, {...aaa_obj}, {...aaa_obj}]
+    const data_3    = jsonpath.assign(data_1, path, aaa_prime)
+
+    expect(jsonpath.value(data_1, path)).toBe(aaa_arr)
+    expect(jsonpath.value(data_3, path)).toBe(aaa_prime)
+
+    expect(data_3).not.toBe(data_1)
+  })
 })
