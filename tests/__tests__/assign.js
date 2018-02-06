@@ -5,7 +5,7 @@ require('index.js')(jsonpath)
 
 const deepFreeze = require('deep-freeze')
 
-describe('jsonpath.value() to update object', function() {
+describe('jsonpath.value() to assign new data into mutable object', function() {
   const path = '$.a.aa.aaa.aaaa.aaaaa'
   let data_1
 
@@ -49,7 +49,7 @@ describe('jsonpath.value() to update object', function() {
   })
 })
 
-describe('jsonpath.assign() to update object', function() {
+describe('jsonpath.assign() to assign new data into immutable object', function() {
   const path = '$.a.aa.aaa.aaaa.aaaaa'
   let data_1
 

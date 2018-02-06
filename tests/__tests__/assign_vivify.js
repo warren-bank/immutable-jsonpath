@@ -5,7 +5,7 @@ require('index.js')(jsonpath)
 
 const deepFreeze = require('deep-freeze')
 
-describe('jsonpath.assign() used to vivify non-existent nodes in path', function() {
+describe('jsonpath.assign() to vivify non-existent nodes in path', function() {
   const obj = deepFreeze({})
 
   it('should scaffold nested Objects', function() {

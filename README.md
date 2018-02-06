@@ -11,9 +11,9 @@ npm install --save 'jsonpath'
 npm install --save '@warren-bank/immutable-jsonpath'
 ```
 
-- - - -
-
 #### Methods:
+
+- - - -
 
 __jsonpath.assign(obj, pathExpression, newValue)__
 
@@ -44,13 +44,132 @@ expect(newData.store.book).toBe(data.store.book)
 
 - - - -
 
+__jsonpath.update(obj, pathExpression, operation, ...data)__
+
+Returns a clone of `obj` having the following properties:
+* every node traversed between the root (`$`) and the target path node (`pathExpression`) are also cloned
+* the clone of the target path node (`pathExpression`) is a collection data type:
+  * `Array` or `Object`
+* the clone of the target path node (`pathExpression`) has been updated by an `operation`
+  * `operation` is a string
+  * `data` contains parameters to configure the behavior of the `operation`
+    * its length and data types are dependent upon the particular `operation`
+
+_considerations:_
+
+* this can be thought of as a convenience method
+  * to update a collection (ie: Array, Object) at `pathExpression` in `obj`
+    * a common pattern may emerge:
+      ```javascript
+      let old_val = jsonpath.value(obj, pathExpression)
+      let new_val = {...old_val}
+      // mutate new_val
+      // assign new_val to `pathExpression` in `obj` resulting in a clone of the Object
+      let new_obj = jsonpath.assign(obj, pathExpression, new_val)
+      ```
+    * this can become tedious
+    * the way `new_val` is mutated in the vast majority of cases is fairly predictable
+    * much of this boilerplate can be performed by a helper function
+
+* my first inclination was to borrow the API convention used by [immutability-helper](https://github.com/kolodny/immutability-helper)
+  * instead, I decided to simplify the API and only focus on the primary use cases
+    * anything more complicated can follow the above pattern and take complete control of the update operation
+
+_operations:_
+
+* to perform on an `Array`:
+  * `delete`
+    * removes 1+ elements from Array beginning at a start index
+    * `data`:
+      * &lt;integer&gt;start
+        * index of first element to delete
+        * a negative value is subtracted from the length of the Array
+      * [&lt;integer&gt;deleteCount]
+        * count of elements to delete at `start`
+        * default = 1
+    * notes:
+      * `data` can be passed to the function as either:
+        * a single Array value
+        * individual arguments
+  * `shift`
+    * removes the first element from Array
+    * note:
+      * the element is discarded
+  * `pop`
+    * removes the last element from Array
+    * note:
+      * the element is discarded
+  * `unshift`
+    * inserts 1 element to the beginning of the Array
+    * `data`:
+      * &lt;Any&gt;value
+  * `push`
+    * inserts 1 element to the end of the Array
+    * `data`:
+      * &lt;Any&gt;value
+  * `concat_start`
+    * concatenates the elements of an input Array to the beginning of the Array
+    * `data`:
+      * &lt;Array&gt;value
+  * `concat_end`
+    * concatenates the elements of an input Array to the end of the Array
+    * `data`:
+      * &lt;Array&gt;value
+  * `slice`
+    * replaces the Array with a contiguous subset of its elements
+    * same input parameters as [Array.slice](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/slice)
+    * `data`:
+      * &lt;integer&gt;start
+        * index of first element to extract into subset
+        * a negative value is subtracted from the length of the Array
+      * [&lt;integer&gt;end]
+        * index of first element (following `start`) to exclude from contiguous subset
+        * a negative value is subtracted from the length of the Array
+        * default = length of the Array
+    * notes:
+      * `data` can be passed to the function as either:
+        * a single Array value
+        * individual arguments
+  * `splice`
+    * changes the contents of the Array by removing existing elements and/or adding new elements
+    * same input parameters as [Array.splice](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/splice)
+    * `data`:
+      * &lt;integer&gt;start
+        * index of element at which to start changing the Array
+        * a negative value is subtracted from the length of the Array
+      * [&lt;integer&gt;deleteCount]
+        * count of elements to delete, beginning at `start`
+        * default = all elements following `start`
+      * [&lt;Any&gt;item1, &lt;Any&gt;item2, ...]
+        * elements to add to the Array, beginning at `start`
+    * notes:
+      * `data` can be passed to the function as either:
+        * a single Array value
+        * individual arguments
+
+* to perform on an `Object`:
+  * `delete`
+    * removes a single attribute
+    * `data`:
+      * &lt;string&gt;key
+        * key of attribute to remove from the Object
+  * `add`
+    * merges data from an input Object into the Object
+    * `data`:
+      * &lt;Object&gt;value
+
+- - - -
+
 #### More Examples:
 
 * in node.js:
-  * [unit tests w/ jest](https://github.com/warren-bank/immutable-jsonpath/blob/master/tests/__tests__/index.js)
+  * unit tests w/ jest:
+    * [jsonpath.assign() to assign new data into immutable object](https://github.com/warren-bank/immutable-jsonpath/blob/master/tests/__tests__/assign.js)
+    * [jsonpath.assign() to vivify non-existent nodes in path](https://github.com/warren-bank/immutable-jsonpath/blob/master/tests/__tests__/assign_vivify.js)
+    * [jsonpath.update() to update existing data collections in immutable object](https://github.com/warren-bank/immutable-jsonpath/blob/master/tests/__tests__/update.js)
 
 * in the web browser:
-  * [unit tests w/ jasmine](https://cdn.rawgit.com/warren-bank/immutable-jsonpath/master/browser-build/tests/index.html)
+  * [run all of the above unit tests w/ jasmine](https://cdn.rawgit.com/warren-bank/immutable-jsonpath/master/browser-build/tests/index.html)
 
 - - - -
 
