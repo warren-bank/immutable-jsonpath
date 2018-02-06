@@ -122,6 +122,18 @@ const enhancer = jsonpath => {
           new_value.splice(...data)
           new_obj   = this.assign(obj, path_string, new_value)
           break;
+        case 'filter':
+          assert.ok(data instanceof Function, "filter Function is needed")
+          new_value = [...old_value]
+          new_value = new_value.filter((element, index) => data(element, index))
+          new_obj   = this.assign(obj, path_string, new_value)
+          break;
+        case 'map':
+          assert.ok(data instanceof Function, "map Function is needed")
+          new_value = [...old_value]
+          new_value = new_value.map((element, index) => data(element, index))
+          new_obj   = this.assign(obj, path_string, new_value)
+          break;
         default:
           throw new Error(error_msg.op)
       }
@@ -141,8 +153,19 @@ const enhancer = jsonpath => {
           break;
         case 'add':
           assert.ok(data instanceof Object, "data Object is needed")
-      //  new_value = [...old_value, ...data]
+      //  new_value = {...old_value, ...data}
           new_value = Object.assign({}, old_value, data)
+          new_obj   = this.assign(obj, path_string, new_value)
+          break;
+        case 'subtract':
+          if ((data instanceof Object) && !(data instanceof Array)) {
+            data = Object.keys(data)
+          }
+          assert.ok(data instanceof Array, "data <Object|Array> is needed")
+          new_value = {...old_value}
+          data.forEach(key => {
+            delete new_value[key]
+          })
           new_obj   = this.assign(obj, path_string, new_value)
           break;
         default:

@@ -146,17 +146,49 @@ _operations:_
       * `data` can be passed to the function as either:
         * a single Array value
         * individual arguments
+  * `filter`
+    * replaces the Array with a filtered subset of elements
+    * similar behavior to [Array.filter](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/filter)
+    * `data`:
+      * &lt;Function&gt;callback
+        * parameters passed to `callback`:
+          * `element`
+            * current element being processed
+          * `index`
+            * index of the current element being processed
+        * return value from `callback`:
+          * boolean
+            * `true` indicates that `element` is included in resulting subset
+  * `map`
+    * replaces the Array with a new Array
+      * same length as original Array
+      * elements are mapped by a `callback` function
+    * similar behavior to [Array.map](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map)
+    * `data`:
+      * &lt;Function&gt;callback
+        * parameters passed to `callback`:
+          * `element`
+            * current element being processed
+          * `index`
+            * index of the current element being processed
+        * return value from `callback`:
+          * mapped value of `element`
 
 * to perform on an `Object`:
   * `delete`
     * removes a single attribute
     * `data`:
       * &lt;string&gt;key
-        * key of attribute to remove from the Object
+        * attribute key to remove from the Object
   * `add`
     * merges data from an input Object into the Object
     * `data`:
       * &lt;Object&gt;value
+  * `subtract`
+    * removes 1+ attributes
+    * `data`:
+      * &lt;Object | Array&gt;value
+        * collection of attribute keys to remove from the Object
 
 - - - -
 

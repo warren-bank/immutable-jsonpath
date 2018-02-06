@@ -280,6 +280,50 @@ describe('jsonpath.update() to update existing data collections in immutable obj
     expect(arr_keys(new_obj)).toEqual(['b',...new_keys,'bbbb'])
   })
 
+  it('should update Array: filter all but 2 elements', function() {
+    let filter_fn, new_obj, new_value
+
+      // reminder:
+      //  * when "element" is a collection, it is a reference contained in "obj"
+      //  * do NOT modify "element"
+    filter_fn   = element => element.bb || element.bbb
+    new_obj     = jsonpath.update(old_obj, path_arr, 'filter', filter_fn)
+
+    expect(new_obj).not.toBe(old_obj)
+
+    new_value = jsonpath.value(new_obj, path_arr)
+    expect(new_value instanceof Array).toBe(true)
+    expect(new_value.length).toBe(2)
+
+    expect(arr_keys(new_obj)).toEqual(['bb','bbb'])
+  })
+
+  it('should update Array: map elements', function() {
+    let map_fn, new_obj, new_value
+
+    map_fn      = (element, index) => {
+      // reminder:
+      //  * when "element" is a collection, it is a reference contained in "obj"
+      //  * do NOT modify "element"
+      //  * clone it, if necessary
+      let new_element = {...element}
+      let old_key     = 'b'.repeat(index + 1)
+      let new_key     = 'x'.repeat(index + 1)
+      new_element[new_key] = index + 1
+      delete new_element[old_key]
+      return new_element
+    }
+    new_obj     = jsonpath.update(old_obj, path_arr, 'map', map_fn)
+
+    expect(new_obj).not.toBe(old_obj)
+
+    new_value = jsonpath.value(new_obj, path_arr)
+    expect(new_value instanceof Array).toBe(true)
+    expect(new_value.length).toBe(4)
+
+    expect(arr_keys(new_obj)).toEqual(['x','xx','xxx','xxxx'])
+  })
+
   it('should update Object: delete 1 key', function() {
     let obj_key, new_obj, new_value
 
@@ -294,7 +338,7 @@ describe('jsonpath.update() to update existing data collections in immutable obj
     expect(Object.keys(new_value)).toEqual([])
   })
 
-  it('should update Object: add 3 keys (to hashtable)', function() {
+  it('should update Object: add 2 keys (to hashtable)', function() {
     let obj_addition, new_keys, new_obj, new_value
 
     obj_addition = {}
@@ -311,5 +355,33 @@ describe('jsonpath.update() to update existing data collections in immutable obj
     expect(new_value instanceof Object).toBe(true)
 
     expect(new_value).toEqual({aaaaa: 'hello', new_element_1: 1, new_element_2: 2})
+  })
+
+  it('should update Object: subtract <Array>key', function() {
+    let arr_sub, new_obj, new_value
+
+    arr_sub = ["aaaaa"]
+    new_obj = jsonpath.update(old_obj, path_obj, 'subtract', arr_sub)
+
+    expect(new_obj).not.toBe(old_obj)
+
+    new_value = jsonpath.value(new_obj, path_obj)
+    expect(new_value instanceof Object).toBe(true)
+
+    expect(new_value).toEqual({})
+  })
+
+  it('should update Object: subtract <Object>key', function() {
+    let obj_sub, new_obj, new_value
+
+    obj_sub = {"aaaaa": true}
+    new_obj = jsonpath.update(old_obj, path_obj, 'subtract', obj_sub)
+
+    expect(new_obj).not.toBe(old_obj)
+
+    new_value = jsonpath.value(new_obj, path_obj)
+    expect(new_value instanceof Object).toBe(true)
+
+    expect(new_value).toEqual({})
   })
 })
