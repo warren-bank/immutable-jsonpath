@@ -91,30 +91,72 @@ _operations:_
       * `data` can be passed to the function as either:
         * a single Array value
         * individual arguments
+    * example:
+      ```javascript
+      const data  = {path: {to: {arr: ["a","b","c"]}}}
+      const clone = jsonpath.update(data, '$.path.to.arr', 'delete', 1)
+      expect(clone.path.to.arr).toEqual(["a","c"])
+      ```
   * `shift`
     * removes the first element from Array
     * note:
       * the element is discarded
+    * example:
+      ```javascript
+      const data  = {path: {to: {arr: ["a","b","c"]}}}
+      const clone = jsonpath.update(data, '$.path.to.arr', 'shift')
+      expect(clone.path.to.arr).toEqual(["b","c"])
+      ```
   * `pop`
     * removes the last element from Array
     * note:
       * the element is discarded
+    * example:
+      ```javascript
+      const data  = {path: {to: {arr: ["a","b","c"]}}}
+      const clone = jsonpath.update(data, '$.path.to.arr', 'pop')
+      expect(clone.path.to.arr).toEqual(["a","b"])
+      ```
   * `unshift`
     * inserts 1 element to the beginning of the Array
     * `data`:
       * &lt;Any&gt;value
+    * example:
+      ```javascript
+      const data  = {path: {to: {arr: ["a","b","c"]}}}
+      const clone = jsonpath.update(data, '$.path.to.arr', 'unshift', '0')
+      expect(clone.path.to.arr).toEqual(["0","a","b","c"])
+      ```
   * `push`
     * inserts 1 element to the end of the Array
     * `data`:
       * &lt;Any&gt;value
+    * example:
+      ```javascript
+      const data  = {path: {to: {arr: ["a","b","c"]}}}
+      const clone = jsonpath.update(data, '$.path.to.arr', 'push', '4')
+      expect(clone.path.to.arr).toEqual(["a","b","c","4"])
+      ```
   * `concat_start`
     * concatenates the elements of an input Array to the beginning of the Array
     * `data`:
       * &lt;Array&gt;value
+    * example:
+      ```javascript
+      const data  = {path: {to: {arr: ["a","b","c"]}}}
+      const clone = jsonpath.update(data, '$.path.to.arr', 'concat_start', ["0","1","2"])
+      expect(clone.path.to.arr).toEqual(["0","1","2","a","b","c"])
+      ```
   * `concat_end`
     * concatenates the elements of an input Array to the end of the Array
     * `data`:
       * &lt;Array&gt;value
+    * example:
+      ```javascript
+      const data  = {path: {to: {arr: ["a","b","c"]}}}
+      const clone = jsonpath.update(data, '$.path.to.arr', 'concat_end', ["4","5","6"])
+      expect(clone.path.to.arr).toEqual(["a","b","c","4","5","6"])
+      ```
   * `slice`
     * replaces the Array with a contiguous subset of its elements
     * same input parameters as [Array.slice](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/slice)
@@ -130,6 +172,12 @@ _operations:_
       * `data` can be passed to the function as either:
         * a single Array value
         * individual arguments
+    * example:
+      ```javascript
+      const data  = {path: {to: {arr: ["a","b","c"]}}}
+      const clone = jsonpath.update(data, '$.path.to.arr', 'slice', 0, 2)
+      expect(clone.path.to.arr).toEqual(["a","b"])
+      ```
   * `splice`
     * changes the contents of the Array by removing existing elements and/or adding new elements
     * same input parameters as [Array.splice](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/splice)
@@ -146,6 +194,12 @@ _operations:_
       * `data` can be passed to the function as either:
         * a single Array value
         * individual arguments
+    * example:
+      ```javascript
+      const data  = {path: {to: {arr: ["a","b","c"]}}}
+      const clone = jsonpath.update(data, '$.path.to.arr', 'splice', 2, 1, "3")
+      expect(clone.path.to.arr).toEqual(["a","b","3"])
+      ```
   * `filter`
     * replaces the Array with a filtered subset of elements
     * similar behavior to [Array.filter](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/filter)
@@ -159,6 +213,13 @@ _operations:_
         * return value from `callback`:
           * boolean
             * `true` indicates that `element` is included in resulting subset
+    * example:
+      ```javascript
+      const data  = {path: {to: {arr: ["a","b","c"]}}}
+      const fn    = element => element === 'b'
+      const clone = jsonpath.update(data, '$.path.to.arr', 'filter', fn)
+      expect(clone.path.to.arr).toEqual(["b"])
+      ```
   * `map`
     * replaces the Array with a new Array
       * same length as original Array
@@ -173,6 +234,13 @@ _operations:_
             * index of the current element being processed
         * return value from `callback`:
           * mapped value of `element`
+    * example:
+      ```javascript
+      const data  = {path: {to: {arr: ["a","b","c"]}}}
+      const fn    = element => `(${element})`
+      const clone = jsonpath.update(data, '$.path.to.arr', 'map', fn)
+      expect(clone.path.to.arr).toEqual(["(a)","(b)","(c)"])
+      ```
 
 * to perform on an `Object`:
   * `delete`
@@ -180,15 +248,33 @@ _operations:_
     * `data`:
       * &lt;string&gt;key
         * attribute key to remove from the Object
+    * example:
+      ```javascript
+      const data  = {path: {to: {obj: {a:"a", b:"b", c:"c"}}}}
+      const clone = jsonpath.update(data, '$.path.to.obj', 'delete', 'b')
+      expect(clone.path.to.obj).toEqual({a:"a", c:"c"})
+      ```
   * `add`
     * merges data from an input Object into the Object
     * `data`:
       * &lt;Object&gt;value
+    * example:
+      ```javascript
+      const data  = {path: {to: {obj: {a:"a", b:"b", c:"c"}}}}
+      const clone = jsonpath.update(data, '$.path.to.obj', 'add', {d:"d", e:"e"})
+      expect(clone.path.to.obj).toEqual({a:"a", b:"b", c:"c", d:"d", e:"e"})
+      ```
   * `subtract`
     * removes 1+ attributes
     * `data`:
       * &lt;Object | Array&gt;value
         * collection of attribute keys to remove from the Object
+    * example:
+      ```javascript
+      const data  = {path: {to: {obj: {a:"a", b:"b", c:"c"}}}}
+      const clone = jsonpath.update(data, '$.path.to.obj', 'subtract', ["a","c"])
+      expect(clone.path.to.obj).toEqual({b:"b"})
+      ```
 
 - - - -
 
