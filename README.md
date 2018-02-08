@@ -220,6 +220,9 @@ _operations:_
       const clone = jsonpath.update(data, '$.path.to.arr', 'filter', fn)
       expect(clone.path.to.arr).toEqual(["b"])
       ```
+    * reminder / warning:
+      * each `element` passed to `callback` is a value held in `obj`
+      * you are responsible for writing the `callback` in such a way that `element` is not mutated
   * `map`
     * replaces the Array with a new Array
       * same length as original Array
@@ -241,6 +244,11 @@ _operations:_
       const clone = jsonpath.update(data, '$.path.to.arr', 'map', fn)
       expect(clone.path.to.arr).toEqual(["(a)","(b)","(c)"])
       ```
+    * reminder / warning:
+      * each `element` passed to `callback` is a value held in `obj`
+      * you are responsible for writing the `callback` in such a way that `element` is not mutated
+      * if `element` is a reference to a collection, you must clone it before making any changes
+        * `jsonpath.assign` and `jsonpath.update` are intended for this exact purpose
 
 * to perform on an `Object`:
   * `delete`
