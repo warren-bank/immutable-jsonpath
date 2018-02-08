@@ -56,7 +56,6 @@ const enhancer = jsonpath => {
     }
     else if (old_value instanceof Array) {
       let new_value, new_obj
-      let processed = false
 
       // operations that are special cases for 'splice'
       switch (operation.toLowerCase()) {
@@ -124,14 +123,12 @@ const enhancer = jsonpath => {
           break;
         case 'filter':
           assert.ok(data instanceof Function, "filter Function is needed")
-          new_value = [...old_value]
-          new_value = new_value.filter((element, index) => data(element, index))
+          new_value = old_value.filter((element, index) => data(element, index))
           new_obj   = this.assign(obj, path_string, new_value)
           break;
         case 'map':
           assert.ok(data instanceof Function, "map Function is needed")
-          new_value = [...old_value]
-          new_value = new_value.map((element, index) => data(element, index))
+          new_value = old_value.map((element, index) => data(element, index))
           new_obj   = this.assign(obj, path_string, new_value)
           break;
         default:
